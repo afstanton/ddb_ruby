@@ -3,8 +3,8 @@
 #
 # To parse this JSON, add 'dry-struct' and 'dry-types' gems, then do:
 #
-#   top_level = TopLevel.from_json! "{…}"
-#   puts top_level.optional_class_features.first
+#   character = Character.from_json! "{…}"
+#   puts character.optional_class_features.first
 #
 # If from_json! succeeds, the value returned matches the schema.
 
@@ -18,7 +18,7 @@ module DdbRuby
       include Dry.Types(default: :nominal)
 
       Integer                             = Coercible::Integer
-      Bool                                = Types::Params::Bool
+      Bool                                = Coercible::Bool
       Hash                                = Coercible::Hash
       String                              = Coercible::String
       Double                              = Coercible::Float | Coercible::Integer
@@ -662,7 +662,7 @@ module DdbRuby
       end
     end
 
-    class TopLevelBackground < Dry::Struct
+    class CharacterBackground < Dry::Struct
       attribute :has_custom_background, Types::Bool
       attribute :definition,            CharacteristicsBackgroundClass.optional
       attribute :definition_id,         Types::Nil
@@ -727,7 +727,7 @@ module DdbRuby
       end
     end
 
-    class Character < Dry::Struct
+    class CharacterElement < Dry::Struct
       attribute :user_id,        Types::Integer
       attribute :username,       Types::String
       attribute :character_id,   Types::Integer
@@ -790,7 +790,7 @@ module DdbRuby
       attribute :public_notes,  Types::String
       attribute :dm_user_id,    Types::Integer
       attribute :dm_username,   Types::Username
-      attribute :characters,    Types.Array(Character)
+      attribute :characters,    Types.Array(CharacterElement)
 
       def self.from_dynamic!(d)
         d = Types::Hash[d]
@@ -802,7 +802,7 @@ module DdbRuby
           public_notes:  d.fetch("publicNotes"),
           dm_user_id:    d.fetch("dmUserId"),
           dm_username:   d.fetch("dmUsername"),
-          characters:    d.fetch("characters").map { |x| Character.from_dynamic!(x) },
+          characters:    d.fetch("characters").map { |x| CharacterElement.from_dynamic!(x) },
         )
       end
 
@@ -820,6 +820,126 @@ module DdbRuby
           "dmUserId"    => dm_user_id,
           "dmUsername"  => dm_username,
           "characters"  => characters.map { |x| x.to_dynamic },
+        }
+      end
+
+      def to_json(options = nil)
+        JSON.generate(to_dynamic, options)
+      end
+    end
+
+    class Definition2 < Dry::Struct
+      attribute :id,                 Types::Integer
+      attribute :entity_type_id,     Types::Integer
+      attribute :definition_name,    Types::String
+      attribute :description,        Types::String
+      attribute :snippet,            Types::String
+      attribute :activation,         Types::Nil
+      attribute :source_id,          Types::Integer.optional
+      attribute :source_page_number, Types::Integer.optional
+      attribute :creature_rules,     Types.Array(Types::Any)
+      attribute :spell_list_ids,     Types.Array(Types::Any)
+
+      def self.from_dynamic!(d)
+        d = Types::Hash[d]
+        new(
+          id:                 d.fetch("id"),
+          entity_type_id:     d.fetch("entityTypeId"),
+          definition_name:    d.fetch("name"),
+          description:        d.fetch("description"),
+          snippet:            d.fetch("snippet"),
+          activation:         d.fetch("activation"),
+          source_id:          d.fetch("sourceId"),
+          source_page_number: d.fetch("sourcePageNumber"),
+          creature_rules:     d.fetch("creatureRules"),
+          spell_list_ids:     d.fetch("spellListIds"),
+        )
+      end
+
+      def self.from_json!(json)
+        from_dynamic!(JSON.parse(json))
+      end
+
+      def to_dynamic
+        {
+          "id"               => id,
+          "entityTypeId"     => entity_type_id,
+          "name"             => definition_name,
+          "description"      => description,
+          "snippet"          => snippet,
+          "activation"       => activation,
+          "sourceId"         => source_id,
+          "sourcePageNumber" => source_page_number,
+          "creatureRules"    => creature_rules,
+          "spellListIds"     => spell_list_ids,
+        }
+      end
+
+      def to_json(options = nil)
+        JSON.generate(to_dynamic, options)
+      end
+    end
+
+    class OptionsClass < Dry::Struct
+      attribute :component_id,      Types::Integer
+      attribute :component_type_id, Types::Integer
+      attribute :definition,        Definition2
+
+      def self.from_dynamic!(d)
+        d = Types::Hash[d]
+        new(
+          component_id:      d.fetch("componentId"),
+          component_type_id: d.fetch("componentTypeId"),
+          definition:        Definition2.from_dynamic!(d.fetch("definition")),
+        )
+      end
+
+      def self.from_json!(json)
+        from_dynamic!(JSON.parse(json))
+      end
+
+      def to_dynamic
+        {
+          "componentId"     => component_id,
+          "componentTypeId" => component_type_id,
+          "definition"      => definition.to_dynamic,
+        }
+      end
+
+      def to_json(options = nil)
+        JSON.generate(to_dynamic, options)
+      end
+    end
+
+    class Options < Dry::Struct
+      attribute :race,          Types.Array(OptionsClass)
+      attribute :options_class, Types.Array(OptionsClass)
+      attribute :background,    Types::Nil
+      attribute :item,          Types::Nil
+      attribute :feat,          Types.Array(OptionsClass)
+
+      def self.from_dynamic!(d)
+        d = Types::Hash[d]
+        new(
+          race:          d.fetch("race").map { |x| OptionsClass.from_dynamic!(x) },
+          options_class: d.fetch("class").map { |x| OptionsClass.from_dynamic!(x) },
+          background:    d.fetch("background"),
+          item:          d.fetch("item"),
+          feat:          d.fetch("feat").map { |x| OptionsClass.from_dynamic!(x) },
+        )
+      end
+
+      def self.from_json!(json)
+        from_dynamic!(JSON.parse(json))
+      end
+
+      def to_dynamic
+        {
+          "race"       => race.map { |x| x.to_dynamic },
+          "class"      => options_class.map { |x| x.to_dynamic },
+          "background" => background,
+          "item"       => item,
+          "feat"       => feat.map { |x| x.to_dynamic },
         }
       end
 
@@ -2312,7 +2432,7 @@ module DdbRuby
       end
     end
 
-    class TopLevelClass < Dry::Struct
+    class CharacterClass < Dry::Struct
       attribute :id,                     Types::Integer
       attribute :entity_type_id,         Types::Integer
       attribute :level,                  Types::Integer
@@ -2364,7 +2484,7 @@ module DdbRuby
       end
     end
 
-    class TopLevelCondition < Dry::Struct
+    class CharacterCondition < Dry::Struct
       attribute :id,    Types::Integer
       attribute :level, Types::Integer
 
@@ -3855,126 +3975,6 @@ module DdbRuby
       Active = "active"
     end
 
-    class Definition2 < Dry::Struct
-      attribute :id,                 Types::Integer
-      attribute :entity_type_id,     Types::Integer
-      attribute :definition_name,    Types::String
-      attribute :description,        Types::String
-      attribute :snippet,            Types::String
-      attribute :activation,         Types::Nil
-      attribute :source_id,          Types::Integer.optional
-      attribute :source_page_number, Types::Integer.optional
-      attribute :creature_rules,     Types.Array(Types::Any)
-      attribute :spell_list_ids,     Types.Array(Types::Any)
-
-      def self.from_dynamic!(d)
-        d = Types::Hash[d]
-        new(
-          id:                 d.fetch("id"),
-          entity_type_id:     d.fetch("entityTypeId"),
-          definition_name:    d.fetch("name"),
-          description:        d.fetch("description"),
-          snippet:            d.fetch("snippet"),
-          activation:         d.fetch("activation"),
-          source_id:          d.fetch("sourceId"),
-          source_page_number: d.fetch("sourcePageNumber"),
-          creature_rules:     d.fetch("creatureRules"),
-          spell_list_ids:     d.fetch("spellListIds"),
-        )
-      end
-
-      def self.from_json!(json)
-        from_dynamic!(JSON.parse(json))
-      end
-
-      def to_dynamic
-        {
-          "id"               => id,
-          "entityTypeId"     => entity_type_id,
-          "name"             => definition_name,
-          "description"      => description,
-          "snippet"          => snippet,
-          "activation"       => activation,
-          "sourceId"         => source_id,
-          "sourcePageNumber" => source_page_number,
-          "creatureRules"    => creature_rules,
-          "spellListIds"     => spell_list_ids,
-        }
-      end
-
-      def to_json(options = nil)
-        JSON.generate(to_dynamic, options)
-      end
-    end
-
-    class OptionsClass < Dry::Struct
-      attribute :component_id,      Types::Integer
-      attribute :component_type_id, Types::Integer
-      attribute :definition,        Definition2
-
-      def self.from_dynamic!(d)
-        d = Types::Hash[d]
-        new(
-          component_id:      d.fetch("componentId"),
-          component_type_id: d.fetch("componentTypeId"),
-          definition:        Definition2.from_dynamic!(d.fetch("definition")),
-        )
-      end
-
-      def self.from_json!(json)
-        from_dynamic!(JSON.parse(json))
-      end
-
-      def to_dynamic
-        {
-          "componentId"     => component_id,
-          "componentTypeId" => component_type_id,
-          "definition"      => definition.to_dynamic,
-        }
-      end
-
-      def to_json(options = nil)
-        JSON.generate(to_dynamic, options)
-      end
-    end
-
-    class Options < Dry::Struct
-      attribute :race,          Types.Array(OptionsClass)
-      attribute :options_class, Types.Array(OptionsClass)
-      attribute :background,    Types::Nil
-      attribute :item,          Types::Nil
-      attribute :feat,          Types.Array(OptionsClass)
-
-      def self.from_dynamic!(d)
-        d = Types::Hash[d]
-        new(
-          race:          d.fetch("race").map { |x| OptionsClass.from_dynamic!(x) },
-          options_class: d.fetch("class").map { |x| OptionsClass.from_dynamic!(x) },
-          background:    d.fetch("background"),
-          item:          d.fetch("item"),
-          feat:          d.fetch("feat").map { |x| OptionsClass.from_dynamic!(x) },
-        )
-      end
-
-      def self.from_json!(json)
-        from_dynamic!(JSON.parse(json))
-      end
-
-      def to_dynamic
-        {
-          "race"       => race.map { |x| x.to_dynamic },
-          "class"      => options_class.map { |x| x.to_dynamic },
-          "background" => background,
-          "item"       => item,
-          "feat"       => feat.map { |x| x.to_dynamic },
-        }
-      end
-
-      def to_json(options = nil)
-        JSON.generate(to_dynamic, options)
-      end
-    end
-
     class Traits < Dry::Struct
       attribute :personality_traits, Types::String.optional
       attribute :ideals,             Types::String.optional
@@ -4012,14 +4012,14 @@ module DdbRuby
       end
     end
 
-    class TopLevel < Dry::Struct
+    class Character < Dry::Struct
       attribute :id,                         Types::Integer
       attribute :user_id,                    Types::Integer
       attribute :username,                   Types::Username
       attribute :is_assigned_to_player,      Types::Bool
       attribute :readonly_url,               Types::String
       attribute :decorations,                Decorations
-      attribute :top_level_name,             Types::String
+      attribute :character_name,             Types::String
       attribute :social_name,                Types::Nil
       attribute :gender,                     Types::String.optional
       attribute :faith,                      Types::String.optional
@@ -4041,7 +4041,7 @@ module DdbRuby
       attribute :stats,                      Types.Array(Stat)
       attribute :bonus_stats,                Types.Array(Stat)
       attribute :override_stats,             Types.Array(Stat)
-      attribute :background,                 TopLevelBackground
+      attribute :background,                 CharacterBackground
       attribute :race,                       Race.optional
       attribute :race_definition_id,         Types::Nil
       attribute :race_definition_type_id,    Types::Nil
@@ -4052,7 +4052,7 @@ module DdbRuby
       attribute :lifestyle,                  Types::Nil
       attribute :inventory,                  Types.Array(Inventory)
       attribute :currencies,                 Currencies
-      attribute :classes,                    Types.Array(TopLevelClass)
+      attribute :classes,                    Types.Array(CharacterClass)
       attribute :feats,                      Types.Array(Feat)
       attribute :features,                   Types.Array(Types::Any)
       attribute :custom_defense_adjustments, Types.Array(Types::Any)
@@ -4061,14 +4061,14 @@ module DdbRuby
       attribute :custom_proficiencies,       Types.Array(Types::Any)
       attribute :custom_actions,             Types.Array(Types::Any)
       attribute :character_values,           Types.Array(CharacterValue)
-      attribute :conditions,                 Types.Array(TopLevelCondition)
+      attribute :conditions,                 Types.Array(CharacterCondition)
       attribute :death_saves,                DeathSaves
       attribute :adjustment_xp,              Types::Integer.optional
       attribute :spell_slots,                Types.Array(PactMagic)
       attribute :pact_magic,                 Types.Array(PactMagic)
       attribute :active_source_categories,   Types.Array(Types::Integer)
       attribute :spells,                     Spells
-      attribute :top_level_options,          Options
+      attribute :character_options,          Options
       attribute :choices,                    Choices
       attribute :actions,                    Actions
       attribute :modifiers,                  Modifiers
@@ -4094,7 +4094,7 @@ module DdbRuby
           is_assigned_to_player:      d.fetch("isAssignedToPlayer"),
           readonly_url:               d.fetch("readonlyUrl"),
           decorations:                Decorations.from_dynamic!(d.fetch("decorations")),
-          top_level_name:             d.fetch("name"),
+          character_name:             d.fetch("name"),
           social_name:                d.fetch("socialName"),
           gender:                     d.fetch("gender"),
           faith:                      d.fetch("faith"),
@@ -4116,7 +4116,7 @@ module DdbRuby
           stats:                      d.fetch("stats").map { |x| Stat.from_dynamic!(x) },
           bonus_stats:                d.fetch("bonusStats").map { |x| Stat.from_dynamic!(x) },
           override_stats:             d.fetch("overrideStats").map { |x| Stat.from_dynamic!(x) },
-          background:                 TopLevelBackground.from_dynamic!(d.fetch("background")),
+          background:                 CharacterBackground.from_dynamic!(d.fetch("background")),
           race:                       d.fetch("race") ? Race.from_dynamic!(d.fetch("race")) : nil,
           race_definition_id:         d.fetch("raceDefinitionId"),
           race_definition_type_id:    d.fetch("raceDefinitionTypeId"),
@@ -4127,7 +4127,7 @@ module DdbRuby
           lifestyle:                  d.fetch("lifestyle"),
           inventory:                  d.fetch("inventory").map { |x| Inventory.from_dynamic!(x) },
           currencies:                 Currencies.from_dynamic!(d.fetch("currencies")),
-          classes:                    d.fetch("classes").map { |x| TopLevelClass.from_dynamic!(x) },
+          classes:                    d.fetch("classes").map { |x| CharacterClass.from_dynamic!(x) },
           feats:                      d.fetch("feats").map { |x| Feat.from_dynamic!(x) },
           features:                   d.fetch("features"),
           custom_defense_adjustments: d.fetch("customDefenseAdjustments"),
@@ -4136,14 +4136,14 @@ module DdbRuby
           custom_proficiencies:       d.fetch("customProficiencies"),
           custom_actions:             d.fetch("customActions"),
           character_values:           d.fetch("characterValues").map { |x| CharacterValue.from_dynamic!(x) },
-          conditions:                 d.fetch("conditions").map { |x| TopLevelCondition.from_dynamic!(x) },
+          conditions:                 d.fetch("conditions").map { |x| CharacterCondition.from_dynamic!(x) },
           death_saves:                DeathSaves.from_dynamic!(d.fetch("deathSaves")),
           adjustment_xp:              d.fetch("adjustmentXp"),
           spell_slots:                d.fetch("spellSlots").map { |x| PactMagic.from_dynamic!(x) },
           pact_magic:                 d.fetch("pactMagic").map { |x| PactMagic.from_dynamic!(x) },
           active_source_categories:   d.fetch("activeSourceCategories"),
           spells:                     Spells.from_dynamic!(d.fetch("spells")),
-          top_level_options:          Options.from_dynamic!(d.fetch("options")),
+          character_options:          Options.from_dynamic!(d.fetch("options")),
           choices:                    Choices.from_dynamic!(d.fetch("choices")),
           actions:                    Actions.from_dynamic!(d.fetch("actions")),
           modifiers:                  Modifiers.from_dynamic!(d.fetch("modifiers")),
@@ -4174,7 +4174,7 @@ module DdbRuby
           "isAssignedToPlayer"       => is_assigned_to_player,
           "readonlyUrl"              => readonly_url,
           "decorations"              => decorations.to_dynamic,
-          "name"                     => top_level_name,
+          "name"                     => character_name,
           "socialName"               => social_name,
           "gender"                   => gender,
           "faith"                    => faith,
@@ -4223,7 +4223,7 @@ module DdbRuby
           "pactMagic"                => pact_magic.map { |x| x.to_dynamic },
           "activeSourceCategories"   => active_source_categories,
           "spells"                   => spells.to_dynamic,
-          "options"                  => top_level_options.to_dynamic,
+          "options"                  => character_options.to_dynamic,
           "choices"                  => choices.to_dynamic,
           "actions"                  => actions.to_dynamic,
           "modifiers"                => modifiers.to_dynamic,
