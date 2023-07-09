@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    ddb_ruby (0.0.2)
+    ddb_ruby (0.0.3)
       dry-struct (~> 1.6)
       dry-types (~> 1.7)
       multi_json (~> 1.15)
@@ -82,4 +82,4 @@ DEPENDENCIES
   rubocop (~> 1.21)
 
 BUNDLED WITH
-   2.4.14
+   2.4.15
