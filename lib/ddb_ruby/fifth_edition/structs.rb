@@ -18,33 +18,30 @@ module DdbRuby
       include Dry.Types(default: :nominal)
 
       Integer                             = Coercible::Integer
-      Bool                                = Types::Params::Bool
+      Bool                                = Types:Params::Bool
       Hash                                = Coercible::Hash
       String                              = Coercible::String
       Double                              = Coercible::Float | Coercible::Integer
       SaveSuccessDescription              = Coercible::String.enum("", "half damage")
-      Name                                = Coercible::String.enum("Ammunition", "Finesse", "Golgari Swarm", "Heavy", "Light", "Loading", "Range", "Reach", "Selesnya Conclave", "Thrown", "Two-Handed", "Versatile")
-      Username                            = Coercible::String.enum("afstanton", "hXcMike", "trillianh85")
-      DurationUnit                        = Coercible::String.enum("Day", "Hour", "Minute", "Round", "Special")
-      DurationType                        = Coercible::String.enum("Concentration", "Instantaneous", "Time")
-      BackgroundType                      = Coercible::String.enum("advantage", "bonus", "carrying-capacity", "damage", "disadvantage", "eldritch-blast", "expertise", "ignore", "immunity", "language", "natural-weapon", "proficiency", "protection", "resistance", "set", "set-base", "size", "stealth-disadvantage", "vulnerability")
-      BackgroundFriendlyTypeName          = Coercible::String.enum("Advantage", "Bonus", "Carrying Capacity", "Damage", "Disadvantage", "Eldritch Blast", "Expertise", "Ignore", "Immunity", "Language", "Natural Weapon", "Proficiency", "Protection", "Resistance", "Set", "Set Base", "Size", "Stealth Disadvantage", "Vulnerability")
-      AoeType                             = Coercible::String.enum("Cone", "Cube", "Cylinder", "Line", "Sphere", "Square")
-      Origin                              = Coercible::String.enum("Ranged", "Self", "Sight", "Touch")
+      Username                            = Coercible::String.enum("afstanton", "trillianh85")
+      DurationUnit                        = Coercible::String.enum("Day", "Hour", "Minute", "Round", "Special", "UntilDispelled")
+      DurationType                        = Coercible::String.enum("Concentration", "Instantaneous", "Special", "Time", "Until Dispelled", "Until Dispelled or Triggered")
+      BackgroundType                      = Coercible::String.enum("advantage", "bonus", "carrying-capacity", "damage", "disadvantage", "eldritch-blast", "expertise", "ignore", "immunity", "language", "natural-weapon", "proficiency", "protection", "resistance", "sense", "set", "set-base", "size", "stealth-disadvantage", "vulnerability", "weapon-property")
+      BackgroundFriendlyTypeName          = Coercible::String.enum("Advantage", "Bonus", "Carrying Capacity", "Damage", "Disadvantage", "Eldritch Blast", "Expertise", "Ignore", "Immunity", "Language", "Natural Weapon", "Proficiency", "Protection", "Resistance", "Sense", "Set", "Set Base", "Size", "Stealth Disadvantage", "Vulnerability", "Weapon Property")
+      AoeType                             = Coercible::String.enum("Cone", "Cube", "Cylinder", "Line", "Sphere", "Square", "Square Feet")
+      Origin                              = Coercible::String.enum("Ranged", "Self", "Sight", "Touch", "Unlimited")
       ScaleType                           = Coercible::String.enum("characterlevel", "spelllevel", "spellscale")
       School                              = Coercible::String.enum("Abjuration", "Conjuration", "Divination", "Enchantment", "Evocation", "Illusion", "Necromancy", "Transmutation")
+      Tag                                 = Coercible::String.enum("Banishment", "Buff", "Charmed", "Combat", "Communication", "Compulsion", "Control", "Creation", "Damage", "Debuff", "Deception", "Detection", "Environment", "Exploration", "Foreknowledge", "Healing", "Movement", "Negation", "Scrying", "Shapechanging", "Social", "Summoning", "Teleportation", "Utility", "Warding")
       EntityType                          = Coercible::String.enum("class-feature", "racial-trait")
       PrerequisiteMappingFriendlyTypeName = Coercible::String.enum("Ability Score", "Custom Value", "Proficiency", "Race", "Size")
       PrerequisiteMappingType             = Coercible::String.enum("ability-score", "custom-value", "proficiency", "race", "size")
-      AttunementDescription               = Coercible::String.enum("druid or ranger", "", "Spellcaster", "Warlock", "wizard")
       DamageType                          = Coercible::String.enum("Bludgeoning", "Piercing", "Slashing")
-      FilterType                          = Coercible::String.enum("Armor", "Other Gear", "Potion", "Ring", "Rod", "Wand", "Weapon", "Wondrous item")
-      Rarity                              = Coercible::String.enum("Common", "Rare", "Uncommon", "Very Rare")
-      SubType                             = Coercible::String.enum("Adventuring Gear", "Ammunition", "Arcane Focus", "Druidic Focus", "Holy Symbol", "Potion", "Tool")
-      Tag                                 = Coercible::String.enum("Buff", "Combat", "Communication", "Consumable", "Container", "Control", "Creation", "Damage", "Deception", "Detection", "Exploration", "Eyewear", "Focus", "Handwear", "Headwear", "Healing", "Instrument", "Jewelry", "Movement", "Outerwear", "Social", "Utility", "Warding")
+      FilterType                          = Coercible::String.enum("Armor", "Other Gear", "Potion", "Ring", "Rod", "Staff", "Wand", "Weapon", "Wondrous item")
+      Rarity                              = Coercible::String.enum("Artifact", "Common", "Legendary", "Rare", "Uncommon", "Very Rare")
+      SubType                             = Coercible::String.enum("Adventuring Gear", "Ammunition", "Arcane Focus", "Holy Symbol", "Potion", "Tool")
       ProvidedFrom                        = Coercible::String.enum("database", "storage")
-      AdditionalDescription               = Coercible::String.enum("does not require material components", "Doesn't require any components", "", "the hand is invisible")
-      Restriction                         = Coercible::String.enum("Doesn't require concentration", "")
+      AdditionalDescription               = Coercible::String.enum("Doesn't require any components", "")
       StatusSlug                          = Coercible::String.enum("active")
     end
 
@@ -76,7 +73,7 @@ module DdbRuby
       end
     end
 
-    class Die < Dry::Struct
+    class HitPointDice < Dry::Struct
       attribute :dice_count,      Types::Integer.optional
       attribute :dice_value,      Types::Integer.optional
       attribute :dice_multiplier, Types::Integer.optional
@@ -170,7 +167,7 @@ module DdbRuby
 
     class Range1 < Dry::Struct
       attribute :range,                       Types::Integer.optional
-      attribute :long_range,                  Types::Integer.optional
+      attribute :long_range,                  Types::Nil
       attribute :aoe_type,                    Types::Integer.optional
       attribute :aoe_size,                    Types::Integer.optional
       attribute :has_aoe_special_description, Types::Bool
@@ -231,12 +228,12 @@ module DdbRuby
       attribute :attack_type_range,        Types::Integer.optional
       attribute :action_type,              Types::Integer
       attribute :attack_subtype,           Types::Integer.optional
-      attribute :dice,                     Die.optional
+      attribute :dice,                     HitPointDice.optional
       attribute :value,                    Types::Integer.optional
       attribute :damage_type_id,           Types::Integer.optional
       attribute :is_martial_arts,          Types::Bool
       attribute :is_proficient,            Types::Bool
-      attribute :spell_range_type,         Types::Integer.optional
+      attribute :spell_range_type,         Types::Nil
       attribute :display_as_attack,        Types::Bool.optional
       attribute :range,                    Range1
       attribute :activation,               Activation
@@ -264,7 +261,7 @@ module DdbRuby
           attack_type_range:        d.fetch("attackTypeRange"),
           action_type:              d.fetch("actionType"),
           attack_subtype:           d.fetch("attackSubtype"),
-          dice:                     d.fetch("dice") ? Die.from_dynamic!(d.fetch("dice")) : nil,
+          dice:                     d.fetch("dice") ? HitPointDice.from_dynamic!(d.fetch("dice")) : nil,
           value:                    d.fetch("value"),
           damage_type_id:           d.fetch("damageTypeId"),
           is_martial_arts:          d.fetch("isMartialArts"),
@@ -359,6 +356,55 @@ module DdbRuby
       end
     end
 
+    class CustomBackground < Dry::Struct
+      attribute :id,                                       Types::Integer
+      attribute :entity_type_id,                           Types::Integer
+      attribute :custom_background_name,                   Types::Nil
+      attribute :description,                              Types::Nil
+      attribute :features_background,                      Types::Nil
+      attribute :characteristics_background,               Types::Nil
+      attribute :features_background_definition_id,        Types::Nil
+      attribute :characteristics_background_definition_id, Types::Nil
+      attribute :background_type,                          Types::Nil
+
+      def self.from_dynamic!(d)
+        d = Types::Hash[d]
+        new(
+          id:                                       d.fetch("id"),
+          entity_type_id:                           d.fetch("entityTypeId"),
+          custom_background_name:                   d.fetch("name"),
+          description:                              d.fetch("description"),
+          features_background:                      d.fetch("featuresBackground"),
+          characteristics_background:               d.fetch("characteristicsBackground"),
+          features_background_definition_id:        d.fetch("featuresBackgroundDefinitionId"),
+          characteristics_background_definition_id: d.fetch("characteristicsBackgroundDefinitionId"),
+          background_type:                          d.fetch("backgroundType"),
+        )
+      end
+
+      def self.from_json!(json)
+        from_dynamic!(JSON.parse(json))
+      end
+
+      def to_dynamic
+        {
+          "id"                                    => id,
+          "entityTypeId"                          => entity_type_id,
+          "name"                                  => custom_background_name,
+          "description"                           => description,
+          "featuresBackground"                    => features_background,
+          "characteristicsBackground"             => characteristics_background,
+          "featuresBackgroundDefinitionId"        => features_background_definition_id,
+          "characteristicsBackgroundDefinitionId" => characteristics_background_definition_id,
+          "backgroundType"                        => background_type,
+        }
+      end
+
+      def to_json(options = nil)
+        JSON.generate(to_dynamic, options)
+      end
+    end
+
     class Bond < Dry::Struct
       attribute :id,          Types::Integer
       attribute :description, Types::String
@@ -421,24 +467,9 @@ module DdbRuby
       end
     end
 
-    module Name
-      Ammunition       = "Ammunition"
-      Finesse          = "Finesse"
-      GolgariSwarm     = "Golgari Swarm"
-      Heavy            = "Heavy"
-      Light            = "Light"
-      Loading          = "Loading"
-      Range            = "Range"
-      Reach            = "Reach"
-      SelesnyaConclave = "Selesnya Conclave"
-      Thrown           = "Thrown"
-      TwoHanded        = "Two-Handed"
-      Versatile        = "Versatile"
-    end
-
     class Organization < Dry::Struct
       attribute :id,                Types::Integer
-      attribute :organization_name, Types::Name
+      attribute :organization_name, Types::String
       attribute :description,       Types::String
       attribute :notes,             Types::String.optional.optional
 
@@ -501,7 +532,7 @@ module DdbRuby
       end
     end
 
-    class CharacteristicsBackgroundClass < Dry::Struct
+    class BackgroundDefinition < Dry::Struct
       attribute :id,                                    Types::Integer
       attribute :entity_type_id,                        Types::Integer
       attribute :definition_key,                        Types::String
@@ -613,58 +644,9 @@ module DdbRuby
       end
     end
 
-    class CustomBackground < Dry::Struct
-      attribute :id,                                       Types::Integer
-      attribute :entity_type_id,                           Types::Integer
-      attribute :custom_background_name,                   Types::String.optional
-      attribute :description,                              Types::Nil
-      attribute :features_background,                      CharacteristicsBackgroundClass.optional
-      attribute :characteristics_background,               CharacteristicsBackgroundClass.optional
-      attribute :features_background_definition_id,        Types::Nil
-      attribute :characteristics_background_definition_id, Types::Nil
-      attribute :background_type,                          Types::Integer.optional
-
-      def self.from_dynamic!(d)
-        d = Types::Hash[d]
-        new(
-          id:                                       d.fetch("id"),
-          entity_type_id:                           d.fetch("entityTypeId"),
-          custom_background_name:                   d.fetch("name"),
-          description:                              d.fetch("description"),
-          features_background:                      d.fetch("featuresBackground") ? CharacteristicsBackgroundClass.from_dynamic!(d.fetch("featuresBackground")) : nil,
-          characteristics_background:               d.fetch("characteristicsBackground") ? CharacteristicsBackgroundClass.from_dynamic!(d.fetch("characteristicsBackground")) : nil,
-          features_background_definition_id:        d.fetch("featuresBackgroundDefinitionId"),
-          characteristics_background_definition_id: d.fetch("characteristicsBackgroundDefinitionId"),
-          background_type:                          d.fetch("backgroundType"),
-        )
-      end
-
-      def self.from_json!(json)
-        from_dynamic!(JSON.parse(json))
-      end
-
-      def to_dynamic
-        {
-          "id"                                    => id,
-          "entityTypeId"                          => entity_type_id,
-          "name"                                  => custom_background_name,
-          "description"                           => description,
-          "featuresBackground"                    => features_background&.to_dynamic,
-          "characteristicsBackground"             => characteristics_background&.to_dynamic,
-          "featuresBackgroundDefinitionId"        => features_background_definition_id,
-          "characteristicsBackgroundDefinitionId" => characteristics_background_definition_id,
-          "backgroundType"                        => background_type,
-        }
-      end
-
-      def to_json(options = nil)
-        JSON.generate(to_dynamic, options)
-      end
-    end
-
     class CharacterBackground < Dry::Struct
       attribute :has_custom_background, Types::Bool
-      attribute :definition,            CharacteristicsBackgroundClass.optional
+      attribute :definition,            BackgroundDefinition.optional
       attribute :definition_id,         Types::Nil
       attribute :custom_background,     CustomBackground
 
@@ -672,7 +654,7 @@ module DdbRuby
         d = Types::Hash[d]
         new(
           has_custom_background: d.fetch("hasCustomBackground"),
-          definition:            d.fetch("definition") ? CharacteristicsBackgroundClass.from_dynamic!(d.fetch("definition")) : nil,
+          definition:            d.fetch("definition") ? BackgroundDefinition.from_dynamic!(d.fetch("definition")) : nil,
           definition_id:         d.fetch("definitionId"),
           custom_background:     CustomBackground.from_dynamic!(d.fetch("customBackground")),
         )
@@ -696,7 +678,7 @@ module DdbRuby
       end
     end
 
-    class Stat < Dry::Struct
+    class BonusStatElement < Dry::Struct
       attribute :id,        Types::Integer
       attribute :stat_name, Types::Nil
       attribute :value,     Types::Integer.optional
@@ -778,7 +760,6 @@ module DdbRuby
 
     module Username
       Afstanton   = "afstanton"
-      HXcMike     = "hXcMike"
       Trillianh85 = "trillianh85"
     end
 
@@ -1185,7 +1166,7 @@ module DdbRuby
     class HigherLevelDefinition < Dry::Struct
       attribute :level,   Types::Integer.optional
       attribute :type_id, Types::Integer
-      attribute :dice,    Die.optional
+      attribute :dice,    HitPointDice.optional
       attribute :value,   Types::Integer.optional
       attribute :details, Types::String
 
@@ -1194,7 +1175,7 @@ module DdbRuby
         new(
           level:   d.fetch("level"),
           type_id: d.fetch("typeId"),
-          dice:    d.fetch("dice") ? Die.from_dynamic!(d.fetch("dice")) : nil,
+          dice:    d.fetch("dice") ? HitPointDice.from_dynamic!(d.fetch("dice")) : nil,
           value:   d.fetch("value"),
           details: d.fetch("details"),
         )
@@ -1269,14 +1250,15 @@ module DdbRuby
     end
 
     module DurationUnit
-      Day     = "Day"
-      Hour    = "Hour"
-      Minute  = "Minute"
-      Round   = "Round"
-      Special = "Special"
+      Day            = "Day"
+      Hour           = "Hour"
+      Minute         = "Minute"
+      Round          = "Round"
+      Special        = "Special"
+      UntilDispelled = "UntilDispelled"
     end
 
-    class DefinitionCondition < Dry::Struct
+    class Condition < Dry::Struct
       attribute :condition_type,     Types::Integer
       attribute :condition_id,       Types::Integer
       attribute :condition_duration, Types::Integer
@@ -1314,9 +1296,12 @@ module DdbRuby
     end
 
     module DurationType
-      Concentration = "Concentration"
-      Instantaneous = "Instantaneous"
-      Time          = "Time"
+      Concentration             = "Concentration"
+      Instantaneous             = "Instantaneous"
+      Special                   = "Special"
+      Time                      = "Time"
+      UntilDispelled            = "Until Dispelled"
+      UntilDispelledOrTriggered = "Until Dispelled or Triggered"
     end
 
     class DefinitionDuration < Dry::Struct
@@ -1365,11 +1350,13 @@ module DdbRuby
       Proficiency         = "proficiency"
       Protection          = "protection"
       Resistance          = "resistance"
+      Sense               = "sense"
       Set                 = "set"
       SetBase             = "set-base"
       Size                = "size"
       StealthDisadvantage = "stealth-disadvantage"
       Vulnerability       = "vulnerability"
+      WeaponProperty      = "weapon-property"
     end
 
     class BackgroundDuration < Dry::Struct
@@ -1415,11 +1402,13 @@ module DdbRuby
       Proficiency         = "Proficiency"
       Protection          = "Protection"
       Resistance          = "Resistance"
+      Sense               = "Sense"
       Set                 = "Set"
       SetBase             = "Set Base"
       Size                = "Size"
       StealthDisadvantage = "Stealth Disadvantage"
       Vulnerability       = "Vulnerability"
+      WeaponProperty      = "Weapon Property"
     end
 
     class ItemElement < Dry::Struct
@@ -1429,7 +1418,7 @@ module DdbRuby
       attribute :entity_type_id,          Types::Integer.optional
       attribute :background_type,         Types::BackgroundType
       attribute :sub_type,                Types::String
-      attribute :dice,                    Die.optional
+      attribute :dice,                    HitPointDice.optional
       attribute :restriction,             Types::String.optional
       attribute :stat_id,                 Types::Integer.optional
       attribute :requires_attunement,     Types::Bool
@@ -1444,7 +1433,7 @@ module DdbRuby
       attribute :modifier_sub_type_id,    Types::Integer
       attribute :component_id,            Types::Integer
       attribute :component_type_id,       Types::Integer
-      attribute :die,                     Die.optional
+      attribute :die,                     HitPointDice.optional
       attribute :count,                   Types::Integer.optional
       attribute :duration_unit,           Types::Nil.optional
       attribute :use_primary_stat,        Types::Bool.optional
@@ -1459,7 +1448,7 @@ module DdbRuby
           entity_type_id:          d.fetch("entityTypeId"),
           background_type:         d.fetch("type"),
           sub_type:                d.fetch("subType"),
-          dice:                    d.fetch("dice") ? Die.from_dynamic!(d.fetch("dice")) : nil,
+          dice:                    d.fetch("dice") ? HitPointDice.from_dynamic!(d.fetch("dice")) : nil,
           restriction:             d.fetch("restriction"),
           stat_id:                 d.fetch("statId"),
           requires_attunement:     d.fetch("requiresAttunement"),
@@ -1474,7 +1463,7 @@ module DdbRuby
           modifier_sub_type_id:    d.fetch("modifierSubTypeId"),
           component_id:            d.fetch("componentId"),
           component_type_id:       d.fetch("componentTypeId"),
-          die:                     d["die"] ? Die.from_dynamic!(d["die"]) : nil,
+          die:                     d["die"] ? HitPointDice.from_dynamic!(d["die"]) : nil,
           count:                   d["count"],
           duration_unit:           d["durationUnit"],
           use_primary_stat:        d["usePrimaryStat"],
@@ -1523,19 +1512,21 @@ module DdbRuby
     end
 
     module AoeType
-      Cone     = "Cone"
-      Cube     = "Cube"
-      Cylinder = "Cylinder"
-      Line     = "Line"
-      Sphere   = "Sphere"
-      Square   = "Square"
+      Cone       = "Cone"
+      Cube       = "Cube"
+      Cylinder   = "Cylinder"
+      Line       = "Line"
+      Sphere     = "Sphere"
+      Square     = "Square"
+      SquareFeet = "Square Feet"
     end
 
     module Origin
-      Ranged = "Ranged"
-      Self   = "Self"
-      Sight  = "Sight"
-      Touch  = "Touch"
+      Ranged    = "Ranged"
+      Self      = "Self"
+      Sight     = "Sight"
+      Touch     = "Touch"
+      Unlimited = "Unlimited"
     end
 
     class DefinitionRange < Dry::Struct
@@ -1589,6 +1580,34 @@ module DdbRuby
       Transmutation = "Transmutation"
     end
 
+    module Tag
+      Banishment    = "Banishment"
+      Buff          = "Buff"
+      Charmed       = "Charmed"
+      Combat        = "Combat"
+      Communication = "Communication"
+      Compulsion    = "Compulsion"
+      Control       = "Control"
+      Creation      = "Creation"
+      Damage        = "Damage"
+      Debuff        = "Debuff"
+      Deception     = "Deception"
+      Detection     = "Detection"
+      Environment   = "Environment"
+      Exploration   = "Exploration"
+      Foreknowledge = "Foreknowledge"
+      Healing       = "Healing"
+      Movement      = "Movement"
+      Negation      = "Negation"
+      Scrying       = "Scrying"
+      Shapechanging = "Shapechanging"
+      Social        = "Social"
+      Summoning     = "Summoning"
+      Teleportation = "Teleportation"
+      Utility       = "Utility"
+      Warding       = "Warding"
+    end
+
     class SpellDefinition < Dry::Struct
       attribute :id,                       Types::Integer
       attribute :definition_key,           Types::String
@@ -1600,7 +1619,7 @@ module DdbRuby
       attribute :range,                    DefinitionRange
       attribute :as_part_of_weapon_attack, Types::Bool
       attribute :description,              Types::String
-      attribute :snippet,                  Types::String
+      attribute :snippet,                  Types::String.optional
       attribute :concentration,            Types::Bool
       attribute :ritual,                   Types::Bool
       attribute :range_area,               Types::Nil
@@ -1621,8 +1640,8 @@ module DdbRuby
       attribute :requires_attack_roll,     Types::Bool
       attribute :at_higher_levels,         AtHigherLevels
       attribute :modifiers,                Types.Array(ItemElement)
-      attribute :conditions,               Types.Array(DefinitionCondition)
-      attribute :tags,                     Types.Array(Types::String)
+      attribute :conditions,               Types.Array(Condition)
+      attribute :tags,                     Types.Array(Types::Tag)
       attribute :casting_time_description, Types::String
       attribute :scale_type,               Types::ScaleType.optional
       attribute :sources,                  Types.Array(Source)
@@ -1662,7 +1681,7 @@ module DdbRuby
           requires_attack_roll:     d.fetch("requiresAttackRoll"),
           at_higher_levels:         AtHigherLevels.from_dynamic!(d.fetch("atHigherLevels")),
           modifiers:                d.fetch("modifiers").map { |x| ItemElement.from_dynamic!(x) },
-          conditions:               d.fetch("conditions").map { |x| DefinitionCondition.from_dynamic!(x) },
+          conditions:               d.fetch("conditions").map { |x| Condition.from_dynamic!(x) },
           tags:                     d.fetch("tags"),
           casting_time_description: d.fetch("castingTimeDescription"),
           scale_type:               d.fetch("scaleType"),
@@ -1964,7 +1983,7 @@ module DdbRuby
       attribute :id,          Types::Integer
       attribute :level,       Types::Integer
       attribute :description, Types::String
-      attribute :dice,        Die.optional
+      attribute :dice,        HitPointDice.optional
       attribute :fixed_value, Types::Integer.optional
 
       def self.from_dynamic!(d)
@@ -1973,7 +1992,7 @@ module DdbRuby
           id:          d.fetch("id"),
           level:       d.fetch("level"),
           description: d.fetch("description"),
-          dice:        d.fetch("dice") ? Die.from_dynamic!(d.fetch("dice")) : nil,
+          dice:        d.fetch("dice") ? HitPointDice.from_dynamic!(d.fetch("dice")) : nil,
           fixed_value: d.fetch("fixedValue"),
         )
       end
@@ -2045,7 +2064,7 @@ module DdbRuby
       attribute :creature_rules,                   Types.Array(CreatureRule)
       attribute :level_scales,                     Types.Array(LevelScale).optional
       attribute :infusion_rules,                   Types.Array(InfusionRule).optional
-      attribute :spell_list_ids,                   Types.Array(Types::Integer)
+      attribute :spell_list_ids,                   Types.Array(Types::Any)
       attribute :class_id,                         Types::Integer.optional
       attribute :feature_type,                     Types::Integer
       attribute :sources,                          Types.Array(Source)
@@ -2350,7 +2369,7 @@ module DdbRuby
       attribute :sources,                  Types.Array(Source)
       attribute :class_features,           Types.Array(DefinitionClassFeature)
       attribute :hit_dice,                 Types::Integer
-      attribute :wealth_dice,              Die.optional
+      attribute :wealth_dice,              HitPointDice.optional
       attribute :can_cast_spells,          Types::Bool
       attribute :knows_all_spells,         Types::Bool.optional
       attribute :spell_prepare_type,       Types::Integer.optional
@@ -2379,7 +2398,7 @@ module DdbRuby
           sources:                  d.fetch("sources").map { |x| Source.from_dynamic!(x) },
           class_features:           d.fetch("classFeatures").map { |x| DefinitionClassFeature.from_dynamic!(x) },
           hit_dice:                 d.fetch("hitDice"),
-          wealth_dice:              d.fetch("wealthDice") ? Die.from_dynamic!(d.fetch("wealthDice")) : nil,
+          wealth_dice:              d.fetch("wealthDice") ? HitPointDice.from_dynamic!(d.fetch("wealthDice")) : nil,
           can_cast_spells:          d.fetch("canCastSpells"),
           knows_all_spells:         d.fetch("knowsAllSpells"),
           spell_prepare_type:       d.fetch("spellPrepareType"),
@@ -2484,34 +2503,6 @@ module DdbRuby
       end
     end
 
-    class CharacterCondition < Dry::Struct
-      attribute :id,    Types::Integer
-      attribute :level, Types::Integer
-
-      def self.from_dynamic!(d)
-        d = Types::Hash[d]
-        new(
-          id:    d.fetch("id"),
-          level: d.fetch("level"),
-        )
-      end
-
-      def self.from_json!(json)
-        from_dynamic!(JSON.parse(json))
-      end
-
-      def to_dynamic
-        {
-          "id"    => id,
-          "level" => level,
-        }
-      end
-
-      def to_json(options = nil)
-        JSON.generate(to_dynamic, options)
-      end
-    end
-
     class Configuration < Dry::Struct
       attribute :starting_equipment_type, Types::Integer.optional
       attribute :ability_score_type,      Types::Integer.optional
@@ -2535,6 +2526,395 @@ module DdbRuby
           "startingEquipmentType" => starting_equipment_type,
           "abilityScoreType"      => ability_score_type,
           "showHelpText"          => show_help_text,
+        }
+      end
+
+      def to_json(options = nil)
+        JSON.generate(to_dynamic, options)
+      end
+    end
+
+    class Language < Dry::Struct
+      attribute :language_id, Types::Integer
+      attribute :notes,       Types::String
+
+      def self.from_dynamic!(d)
+        d = Types::Hash[d]
+        new(
+          language_id: d.fetch("languageId"),
+          notes:       d.fetch("notes"),
+        )
+      end
+
+      def self.from_json!(json)
+        from_dynamic!(JSON.parse(json))
+      end
+
+      def to_dynamic
+        {
+          "languageId" => language_id,
+          "notes"      => notes,
+        }
+      end
+
+      def to_json(options = nil)
+        JSON.generate(to_dynamic, options)
+      end
+    end
+
+    class Movement < Dry::Struct
+      attribute :movement_id, Types::Integer
+      attribute :speed,       Types::Integer
+      attribute :notes,       Types::Nil
+
+      def self.from_dynamic!(d)
+        d = Types::Hash[d]
+        new(
+          movement_id: d.fetch("movementId"),
+          speed:       d.fetch("speed"),
+          notes:       d.fetch("notes"),
+        )
+      end
+
+      def self.from_json!(json)
+        from_dynamic!(JSON.parse(json))
+      end
+
+      def to_dynamic
+        {
+          "movementId" => movement_id,
+          "speed"      => speed,
+          "notes"      => notes,
+        }
+      end
+
+      def to_json(options = nil)
+        JSON.generate(to_dynamic, options)
+      end
+    end
+
+    class SavingThrow < Dry::Struct
+      attribute :stat_id,        Types::Integer
+      attribute :bonus_modifier, Types::Nil
+
+      def self.from_dynamic!(d)
+        d = Types::Hash[d]
+        new(
+          stat_id:        d.fetch("statId"),
+          bonus_modifier: d.fetch("bonusModifier"),
+        )
+      end
+
+      def self.from_json!(json)
+        from_dynamic!(JSON.parse(json))
+      end
+
+      def to_dynamic
+        {
+          "statId"        => stat_id,
+          "bonusModifier" => bonus_modifier,
+        }
+      end
+
+      def to_json(options = nil)
+        JSON.generate(to_dynamic, options)
+      end
+    end
+
+    class Sense < Dry::Struct
+      attribute :sense_id, Types::Integer
+      attribute :notes,    Types::String
+
+      def self.from_dynamic!(d)
+        d = Types::Hash[d]
+        new(
+          sense_id: d.fetch("senseId"),
+          notes:    d.fetch("notes"),
+        )
+      end
+
+      def self.from_json!(json)
+        from_dynamic!(JSON.parse(json))
+      end
+
+      def to_dynamic
+        {
+          "senseId" => sense_id,
+          "notes"   => notes,
+        }
+      end
+
+      def to_json(options = nil)
+        JSON.generate(to_dynamic, options)
+      end
+    end
+
+    class Skill < Dry::Struct
+      attribute :skill_id,         Types::Integer
+      attribute :value,            Types::Integer
+      attribute :additional_bonus, Types::Nil
+
+      def self.from_dynamic!(d)
+        d = Types::Hash[d]
+        new(
+          skill_id:         d.fetch("skillId"),
+          value:            d.fetch("value"),
+          additional_bonus: d.fetch("additionalBonus"),
+        )
+      end
+
+      def self.from_json!(json)
+        from_dynamic!(JSON.parse(json))
+      end
+
+      def to_dynamic
+        {
+          "skillId"         => skill_id,
+          "value"           => value,
+          "additionalBonus" => additional_bonus,
+        }
+      end
+
+      def to_json(options = nil)
+        JSON.generate(to_dynamic, options)
+      end
+    end
+
+    class DefinitionStat < Dry::Struct
+      attribute :stat_id,   Types::Integer
+      attribute :stat_name, Types::Nil
+      attribute :value,     Types::Integer
+
+      def self.from_dynamic!(d)
+        d = Types::Hash[d]
+        new(
+          stat_id:   d.fetch("statId"),
+          stat_name: d.fetch("name"),
+          value:     d.fetch("value"),
+        )
+      end
+
+      def self.from_json!(json)
+        from_dynamic!(JSON.parse(json))
+      end
+
+      def to_dynamic
+        {
+          "statId" => stat_id,
+          "name"   => stat_name,
+          "value"  => value,
+        }
+      end
+
+      def to_json(options = nil)
+        JSON.generate(to_dynamic, options)
+      end
+    end
+
+    class CreatureDefinition < Dry::Struct
+      attribute :id,                            Types::Integer
+      attribute :entity_type_id,                Types::Integer
+      attribute :definition_name,               Types::String
+      attribute :alignment_id,                  Types::Integer
+      attribute :size_id,                       Types::Integer
+      attribute :type_id,                       Types::Integer
+      attribute :armor_class,                   Types::Integer
+      attribute :armor_class_description,       Types::String
+      attribute :average_hit_points,            Types::Integer
+      attribute :hit_point_dice,                HitPointDice
+      attribute :movements,                     Types.Array(Movement)
+      attribute :passive_perception,            Types::Integer
+      attribute :is_homebrew,                   Types::Bool
+      attribute :challenge_rating_id,           Types::Integer
+      attribute :source_id,                     Types::Integer
+      attribute :source_page_number,            Types::Integer
+      attribute :is_legendary,                  Types::Bool
+      attribute :is_mythic,                     Types::Bool
+      attribute :has_lair,                      Types::Bool
+      attribute :avatar_url,                    Types::String
+      attribute :large_avatar_url,              Types::String
+      attribute :basic_avatar_url,              Types::String
+      attribute :version,                       Types::Nil
+      attribute :swarm,                         Types::Nil
+      attribute :sub_types,                     Types.Array(Types::Integer)
+      attribute :environments,                  Types.Array(Types::Any)
+      attribute :tags,                          Types.Array(Types::Any)
+      attribute :sources,                       Types.Array(Source)
+      attribute :stats,                         Types.Array(DefinitionStat)
+      attribute :senses,                        Types.Array(Sense)
+      attribute :damage_adjustments,            Types.Array(Types::Integer)
+      attribute :condition_immunities,          Types.Array(Types::Integer)
+      attribute :saving_throws,                 Types.Array(SavingThrow)
+      attribute :skills,                        Types.Array(Skill)
+      attribute :languages,                     Types.Array(Language)
+      attribute :special_traits_description,    Types::String
+      attribute :actions_description,           Types::String
+      attribute :reactions_description,         Types::String
+      attribute :legendary_actions_description, Types::String
+      attribute :mythic_actions_description,    Types::Nil
+      attribute :bonus_actions_description,     Types::Nil
+      attribute :characteristics_description,   Types::String
+      attribute :lair_description,              Types::String
+      attribute :language_description,          Types::Nil
+      attribute :language_note,                 Types::String
+      attribute :hide_cr,                       Types::Bool
+      attribute :is_legacy,                     Types::Bool
+
+      def self.from_dynamic!(d)
+        d = Types::Hash[d]
+        new(
+          id:                            d.fetch("id"),
+          entity_type_id:                d.fetch("entityTypeId"),
+          definition_name:               d.fetch("name"),
+          alignment_id:                  d.fetch("alignmentId"),
+          size_id:                       d.fetch("sizeId"),
+          type_id:                       d.fetch("typeId"),
+          armor_class:                   d.fetch("armorClass"),
+          armor_class_description:       d.fetch("armorClassDescription"),
+          average_hit_points:            d.fetch("averageHitPoints"),
+          hit_point_dice:                HitPointDice.from_dynamic!(d.fetch("hitPointDice")),
+          movements:                     d.fetch("movements").map { |x| Movement.from_dynamic!(x) },
+          passive_perception:            d.fetch("passivePerception"),
+          is_homebrew:                   d.fetch("isHomebrew"),
+          challenge_rating_id:           d.fetch("challengeRatingId"),
+          source_id:                     d.fetch("sourceId"),
+          source_page_number:            d.fetch("sourcePageNumber"),
+          is_legendary:                  d.fetch("isLegendary"),
+          is_mythic:                     d.fetch("isMythic"),
+          has_lair:                      d.fetch("hasLair"),
+          avatar_url:                    d.fetch("avatarUrl"),
+          large_avatar_url:              d.fetch("largeAvatarUrl"),
+          basic_avatar_url:              d.fetch("basicAvatarUrl"),
+          version:                       d.fetch("version"),
+          swarm:                         d.fetch("swarm"),
+          sub_types:                     d.fetch("subTypes"),
+          environments:                  d.fetch("environments"),
+          tags:                          d.fetch("tags"),
+          sources:                       d.fetch("sources").map { |x| Source.from_dynamic!(x) },
+          stats:                         d.fetch("stats").map { |x| DefinitionStat.from_dynamic!(x) },
+          senses:                        d.fetch("senses").map { |x| Sense.from_dynamic!(x) },
+          damage_adjustments:            d.fetch("damageAdjustments"),
+          condition_immunities:          d.fetch("conditionImmunities"),
+          saving_throws:                 d.fetch("savingThrows").map { |x| SavingThrow.from_dynamic!(x) },
+          skills:                        d.fetch("skills").map { |x| Skill.from_dynamic!(x) },
+          languages:                     d.fetch("languages").map { |x| Language.from_dynamic!(x) },
+          special_traits_description:    d.fetch("specialTraitsDescription"),
+          actions_description:           d.fetch("actionsDescription"),
+          reactions_description:         d.fetch("reactionsDescription"),
+          legendary_actions_description: d.fetch("legendaryActionsDescription"),
+          mythic_actions_description:    d.fetch("mythicActionsDescription"),
+          bonus_actions_description:     d.fetch("bonusActionsDescription"),
+          characteristics_description:   d.fetch("characteristicsDescription"),
+          lair_description:              d.fetch("lairDescription"),
+          language_description:          d.fetch("languageDescription"),
+          language_note:                 d.fetch("languageNote"),
+          hide_cr:                       d.fetch("hideCr"),
+          is_legacy:                     d.fetch("isLegacy"),
+        )
+      end
+
+      def self.from_json!(json)
+        from_dynamic!(JSON.parse(json))
+      end
+
+      def to_dynamic
+        {
+          "id"                          => id,
+          "entityTypeId"                => entity_type_id,
+          "name"                        => definition_name,
+          "alignmentId"                 => alignment_id,
+          "sizeId"                      => size_id,
+          "typeId"                      => type_id,
+          "armorClass"                  => armor_class,
+          "armorClassDescription"       => armor_class_description,
+          "averageHitPoints"            => average_hit_points,
+          "hitPointDice"                => hit_point_dice.to_dynamic,
+          "movements"                   => movements.map { |x| x.to_dynamic },
+          "passivePerception"           => passive_perception,
+          "isHomebrew"                  => is_homebrew,
+          "challengeRatingId"           => challenge_rating_id,
+          "sourceId"                    => source_id,
+          "sourcePageNumber"            => source_page_number,
+          "isLegendary"                 => is_legendary,
+          "isMythic"                    => is_mythic,
+          "hasLair"                     => has_lair,
+          "avatarUrl"                   => avatar_url,
+          "largeAvatarUrl"              => large_avatar_url,
+          "basicAvatarUrl"              => basic_avatar_url,
+          "version"                     => version,
+          "swarm"                       => swarm,
+          "subTypes"                    => sub_types,
+          "environments"                => environments,
+          "tags"                        => tags,
+          "sources"                     => sources.map { |x| x.to_dynamic },
+          "stats"                       => stats.map { |x| x.to_dynamic },
+          "senses"                      => senses.map { |x| x.to_dynamic },
+          "damageAdjustments"           => damage_adjustments,
+          "conditionImmunities"         => condition_immunities,
+          "savingThrows"                => saving_throws.map { |x| x.to_dynamic },
+          "skills"                      => skills.map { |x| x.to_dynamic },
+          "languages"                   => languages.map { |x| x.to_dynamic },
+          "specialTraitsDescription"    => special_traits_description,
+          "actionsDescription"          => actions_description,
+          "reactionsDescription"        => reactions_description,
+          "legendaryActionsDescription" => legendary_actions_description,
+          "mythicActionsDescription"    => mythic_actions_description,
+          "bonusActionsDescription"     => bonus_actions_description,
+          "characteristicsDescription"  => characteristics_description,
+          "lairDescription"             => lair_description,
+          "languageDescription"         => language_description,
+          "languageNote"                => language_note,
+          "hideCr"                      => hide_cr,
+          "isLegacy"                    => is_legacy,
+        }
+      end
+
+      def to_json(options = nil)
+        JSON.generate(to_dynamic, options)
+      end
+    end
+
+    class Creature < Dry::Struct
+      attribute :id,                   Types::Integer
+      attribute :entity_type_id,       Types::Integer
+      attribute :creature_name,        Types::Nil
+      attribute :description,          Types::Nil
+      attribute :is_active,            Types::Bool
+      attribute :removed_hit_points,   Types::Integer
+      attribute :temporary_hit_points, Types::Nil
+      attribute :group_id,             Types::Integer
+      attribute :definition,           CreatureDefinition
+
+      def self.from_dynamic!(d)
+        d = Types::Hash[d]
+        new(
+          id:                   d.fetch("id"),
+          entity_type_id:       d.fetch("entityTypeId"),
+          creature_name:        d.fetch("name"),
+          description:          d.fetch("description"),
+          is_active:            d.fetch("isActive"),
+          removed_hit_points:   d.fetch("removedHitPoints"),
+          temporary_hit_points: d.fetch("temporaryHitPoints"),
+          group_id:             d.fetch("groupId"),
+          definition:           CreatureDefinition.from_dynamic!(d.fetch("definition")),
+        )
+      end
+
+      def self.from_json!(json)
+        from_dynamic!(JSON.parse(json))
+      end
+
+      def to_dynamic
+        {
+          "id"                 => id,
+          "entityTypeId"       => entity_type_id,
+          "name"               => creature_name,
+          "description"        => description,
+          "isActive"           => is_active,
+          "removedHitPoints"   => removed_hit_points,
+          "temporaryHitPoints" => temporary_hit_points,
+          "groupId"            => group_id,
+          "definition"         => definition.to_dynamic,
         }
       end
 
@@ -2583,7 +2963,7 @@ module DdbRuby
     class CustomItem < Dry::Struct
       attribute :id,               Types::Integer
       attribute :custom_item_name, Types::String
-      attribute :description,      Types::String.optional
+      attribute :description,      Types::String
       attribute :weight,           Types::Integer.optional
       attribute :cost,             Types::Nil
       attribute :quantity,         Types::Integer
@@ -2883,7 +3263,7 @@ module DdbRuby
       end
     end
 
-    class Feat < Dry::Struct
+    class CharacterFeat < Dry::Struct
       attribute :component_type_id, Types::Integer
       attribute :component_id,      Types::Integer
       attribute :definition,        Definition1
@@ -2917,14 +3297,6 @@ module DdbRuby
       end
     end
 
-    module AttunementDescription
-      DruidOrRanger = "druid or ranger"
-      Empty         = ""
-      Spellcaster   = "Spellcaster"
-      Warlock       = "Warlock"
-      Wizard        = "wizard"
-    end
-
     module DamageType
       Bludgeoning = "Bludgeoning"
       Piercing    = "Piercing"
@@ -2937,52 +3309,28 @@ module DdbRuby
       Potion       = "Potion"
       Ring         = "Ring"
       Rod          = "Rod"
+      Staff        = "Staff"
       Wand         = "Wand"
       Weapon       = "Weapon"
       WondrousItem = "Wondrous item"
     end
 
     module Rarity
-      Common   = "Common"
-      Rare     = "Rare"
-      Uncommon = "Uncommon"
-      VeryRare = "Very Rare"
+      Artifact  = "Artifact"
+      Common    = "Common"
+      Legendary = "Legendary"
+      Rare      = "Rare"
+      Uncommon  = "Uncommon"
+      VeryRare  = "Very Rare"
     end
 
     module SubType
       AdventuringGear = "Adventuring Gear"
       Ammunition      = "Ammunition"
       ArcaneFocus     = "Arcane Focus"
-      DruidicFocus    = "Druidic Focus"
       HolySymbol      = "Holy Symbol"
       Potion          = "Potion"
       Tool            = "Tool"
-    end
-
-    module Tag
-      Buff          = "Buff"
-      Combat        = "Combat"
-      Communication = "Communication"
-      Consumable    = "Consumable"
-      Container     = "Container"
-      Control       = "Control"
-      Creation      = "Creation"
-      Damage        = "Damage"
-      Deception     = "Deception"
-      Detection     = "Detection"
-      Exploration   = "Exploration"
-      Eyewear       = "Eyewear"
-      Focus         = "Focus"
-      Handwear      = "Handwear"
-      Headwear      = "Headwear"
-      Healing       = "Healing"
-      Instrument    = "Instrument"
-      Jewelry       = "Jewelry"
-      Movement      = "Movement"
-      Outerwear     = "Outerwear"
-      Social        = "Social"
-      Utility       = "Utility"
-      Warding       = "Warding"
     end
 
     class WeaponBehavior < Dry::Struct
@@ -2992,7 +3340,7 @@ module DdbRuby
       attribute :attack_type,          Types::Integer
       attribute :category_id,          Types::Integer
       attribute :properties,           Types.Array(Organization)
-      attribute :damage,               Die
+      attribute :damage,               HitPointDice
       attribute :damage_type,          Types::DamageType
       attribute :range,                Types::Integer
       attribute :long_range,           Types::Integer
@@ -3007,7 +3355,7 @@ module DdbRuby
           attack_type:          d.fetch("attackType"),
           category_id:          d.fetch("categoryId"),
           properties:           d.fetch("properties").map { |x| Organization.from_dynamic!(x) },
-          damage:               Die.from_dynamic!(d.fetch("damage")),
+          damage:               HitPointDice.from_dynamic!(d.fetch("damage")),
           damage_type:          d.fetch("damageType"),
           range:                d.fetch("range"),
           long_range:           d.fetch("longRange"),
@@ -3054,9 +3402,9 @@ module DdbRuby
       attribute :capacity,                  Types::String.optional
       attribute :capacity_weight,           Types::Integer
       attribute :definition_type,           Types::String.optional
-      attribute :description,               Types::String.optional
+      attribute :description,               Types::String
       attribute :can_attune,                Types::Bool
-      attribute :attunement_description,    Types::AttunementDescription.optional
+      attribute :attunement_description,    Types::String.optional
       attribute :rarity,                    Types::Rarity.optional
       attribute :is_homebrew,               Types::Bool
       attribute :version,                   Types::Nil
@@ -3069,7 +3417,7 @@ module DdbRuby
       attribute :filter_type,               Types::FilterType.optional
       attribute :cost,                      Types::Double.optional
       attribute :is_pack,                   Types::Bool
-      attribute :tags,                      Types.Array(Types::Tag)
+      attribute :tags,                      Types.Array(Types::String)
       attribute :granted_modifiers,         Types.Array(ItemElement)
       attribute :sub_type,                  Types::SubType.optional
       attribute :is_consumable,             Types::Bool
@@ -3079,7 +3427,7 @@ module DdbRuby
       attribute :strength_requirement,      Types::Integer.optional
       attribute :armor_class,               Types::Integer.optional
       attribute :stealth_check,             Types::Integer.optional
-      attribute :damage,                    Die.optional
+      attribute :damage,                    HitPointDice.optional
       attribute :damage_type,               Types::DamageType.optional
       attribute :fixed_damage,              Types::Nil
       attribute :properties,                Types.Array(Organization).optional
@@ -3138,7 +3486,7 @@ module DdbRuby
           strength_requirement:      d.fetch("strengthRequirement"),
           armor_class:               d.fetch("armorClass"),
           stealth_check:             d.fetch("stealthCheck"),
-          damage:                    d.fetch("damage") ? Die.from_dynamic!(d.fetch("damage")) : nil,
+          damage:                    d.fetch("damage") ? HitPointDice.from_dynamic!(d.fetch("damage")) : nil,
           damage_type:               d.fetch("damageType"),
           fixed_damage:              d.fetch("fixedDamage"),
           properties:                d.fetch("properties")&.map { |x| Organization.from_dynamic!(x) },
@@ -3375,13 +3723,13 @@ module DdbRuby
     end
 
     class Notes < Dry::Struct
-      attribute :allies,               Types::Nil
+      attribute :allies,               Types::String.optional
       attribute :personal_possessions, Types::String.optional
       attribute :other_holdings,       Types::Nil
-      attribute :organizations,        Types::Nil
-      attribute :enemies,              Types::Nil
+      attribute :organizations,        Types::String.optional
+      attribute :enemies,              Types::String.optional
       attribute :backstory,            Types::String.optional
-      attribute :other_notes,          Types::Nil
+      attribute :other_notes,          Types::String.optional
 
       def self.from_dynamic!(d)
         d = Types::Hash[d]
@@ -3729,18 +4077,11 @@ module DdbRuby
     end
 
     module AdditionalDescription
-      DoesNotRequireMaterialComponents = "does not require material components"
-      DoesnTRequireAnyComponents       = "Doesn't require any components"
-      Empty                            = ""
-      TheHandIsInvisible               = "the hand is invisible"
-    end
-
-    module Restriction
-      DoesnTRequireConcentration = "Doesn't require concentration"
+      DoesnTRequireAnyComponents = "Doesn't require any components"
       Empty                      = ""
     end
 
-    class SpellsClass < Dry::Struct
+    class RaceElement < Dry::Struct
       attribute :override_save_dc,          Types::Nil
       attribute :limited_use,               ClassLimitedUse.optional
       attribute :id,                        Types::Integer
@@ -3752,12 +4093,12 @@ module DdbRuby
       attribute :uses_spell_slot,           Types::Bool
       attribute :cast_at_level,             Types::Integer.optional
       attribute :always_prepared,           Types::Bool
-      attribute :restriction,               Types::Restriction
-      attribute :spell_casting_ability_id,  Types::Integer.optional
+      attribute :restriction,               Types::String
+      attribute :spell_casting_ability_id,  Types::Integer
       attribute :display_as_attack,         Types::Nil
       attribute :additional_description,    Types::AdditionalDescription.optional
       attribute :cast_only_as_ritual,       Types::Bool
-      attribute :ritual_casting_type,       Types::Integer.optional
+      attribute :ritual_casting_type,       Types::Nil
       attribute :range,                     DefinitionRange
       attribute :activation,                Activation
       attribute :base_level_at_will,        Types::Bool
@@ -3847,7 +4188,7 @@ module DdbRuby
       attribute :prepared,                  Types::Bool
       attribute :counts_as_known_spell,     Types::Nil
       attribute :uses_spell_slot,           Types::Bool
-      attribute :cast_at_level,             Types::Nil
+      attribute :cast_at_level,             Types::Integer.optional
       attribute :always_prepared,           Types::Bool
       attribute :restriction,               Types::Nil
       attribute :spell_casting_ability_id,  Types::Nil
@@ -3934,21 +4275,118 @@ module DdbRuby
       end
     end
 
-    class Spells < Dry::Struct
-      attribute :race,         Types.Array(SpellsClass)
-      attribute :spells_class, Types.Array(SpellsClass)
-      attribute :background,   Types::Nil
-      attribute :item,         Types.Array(Item)
-      attribute :feat,         Types.Array(SpellsClass)
+    class SpellsClass < Dry::Struct
+      attribute :override_save_dc,          Types::Nil
+      attribute :limited_use,               ClassLimitedUse.optional
+      attribute :id,                        Types::Integer.optional
+      attribute :entity_type_id,            Types::Integer.optional
+      attribute :definition,                SpellDefinition.optional
+      attribute :definition_id,             Types::Integer
+      attribute :prepared,                  Types::Bool
+      attribute :counts_as_known_spell,     Types::Bool.optional
+      attribute :uses_spell_slot,           Types::Bool
+      attribute :cast_at_level,             Types::Nil
+      attribute :always_prepared,           Types::Bool
+      attribute :restriction,               Types::String.optional
+      attribute :spell_casting_ability_id,  Types::Nil
+      attribute :display_as_attack,         Types::Nil
+      attribute :additional_description,    Types::String.optional
+      attribute :cast_only_as_ritual,       Types::Bool
+      attribute :ritual_casting_type,       Types::Integer.optional
+      attribute :range,                     DefinitionRange.optional
+      attribute :activation,                Activation.optional
+      attribute :base_level_at_will,        Types::Bool
+      attribute :at_will_limited_use_level, Types::Nil
+      attribute :is_signature_spell,        Types::Nil
+      attribute :component_id,              Types::Integer
+      attribute :component_type_id,         Types::Integer
+      attribute :spell_list_id,             Types::Nil
 
       def self.from_dynamic!(d)
         d = Types::Hash[d]
         new(
-          race:         d.fetch("race").map { |x| SpellsClass.from_dynamic!(x) },
+          override_save_dc:          d.fetch("overrideSaveDc"),
+          limited_use:               d.fetch("limitedUse") ? ClassLimitedUse.from_dynamic!(d.fetch("limitedUse")) : nil,
+          id:                        d.fetch("id"),
+          entity_type_id:            d.fetch("entityTypeId"),
+          definition:                d.fetch("definition") ? SpellDefinition.from_dynamic!(d.fetch("definition")) : nil,
+          definition_id:             d.fetch("definitionId"),
+          prepared:                  d.fetch("prepared"),
+          counts_as_known_spell:     d.fetch("countsAsKnownSpell"),
+          uses_spell_slot:           d.fetch("usesSpellSlot"),
+          cast_at_level:             d.fetch("castAtLevel"),
+          always_prepared:           d.fetch("alwaysPrepared"),
+          restriction:               d.fetch("restriction"),
+          spell_casting_ability_id:  d.fetch("spellCastingAbilityId"),
+          display_as_attack:         d.fetch("displayAsAttack"),
+          additional_description:    d.fetch("additionalDescription"),
+          cast_only_as_ritual:       d.fetch("castOnlyAsRitual"),
+          ritual_casting_type:       d.fetch("ritualCastingType"),
+          range:                     d.fetch("range") ? DefinitionRange.from_dynamic!(d.fetch("range")) : nil,
+          activation:                d.fetch("activation") ? Activation.from_dynamic!(d.fetch("activation")) : nil,
+          base_level_at_will:        d.fetch("baseLevelAtWill"),
+          at_will_limited_use_level: d.fetch("atWillLimitedUseLevel"),
+          is_signature_spell:        d.fetch("isSignatureSpell"),
+          component_id:              d.fetch("componentId"),
+          component_type_id:         d.fetch("componentTypeId"),
+          spell_list_id:             d.fetch("spellListId"),
+        )
+      end
+
+      def self.from_json!(json)
+        from_dynamic!(JSON.parse(json))
+      end
+
+      def to_dynamic
+        {
+          "overrideSaveDc"        => override_save_dc,
+          "limitedUse"            => limited_use&.to_dynamic,
+          "id"                    => id,
+          "entityTypeId"          => entity_type_id,
+          "definition"            => definition&.to_dynamic,
+          "definitionId"          => definition_id,
+          "prepared"              => prepared,
+          "countsAsKnownSpell"    => counts_as_known_spell,
+          "usesSpellSlot"         => uses_spell_slot,
+          "castAtLevel"           => cast_at_level,
+          "alwaysPrepared"        => always_prepared,
+          "restriction"           => restriction,
+          "spellCastingAbilityId" => spell_casting_ability_id,
+          "displayAsAttack"       => display_as_attack,
+          "additionalDescription" => additional_description,
+          "castOnlyAsRitual"      => cast_only_as_ritual,
+          "ritualCastingType"     => ritual_casting_type,
+          "range"                 => range&.to_dynamic,
+          "activation"            => activation&.to_dynamic,
+          "baseLevelAtWill"       => base_level_at_will,
+          "atWillLimitedUseLevel" => at_will_limited_use_level,
+          "isSignatureSpell"      => is_signature_spell,
+          "componentId"           => component_id,
+          "componentTypeId"       => component_type_id,
+          "spellListId"           => spell_list_id,
+        }
+      end
+
+      def to_json(options = nil)
+        JSON.generate(to_dynamic, options)
+      end
+    end
+
+    class Spells < Dry::Struct
+      attribute :race,         Types.Array(RaceElement)
+      attribute :spells_class, Types.Array(SpellsClass)
+      attribute :background,   Types::Nil
+      attribute :item,         Types.Array(Item)
+      attribute :feat,         Types.Array(RaceElement)
+
+      def self.from_dynamic!(d)
+        d = Types::Hash[d]
+        new(
+          race:         d.fetch("race").map { |x| RaceElement.from_dynamic!(x) },
           spells_class: d.fetch("class").map { |x| SpellsClass.from_dynamic!(x) },
           background:   d.fetch("background"),
           item:         d.fetch("item").map { |x| Item.from_dynamic!(x) },
-          feat:         d.fetch("feat").map { |x| SpellsClass.from_dynamic!(x) },
+          feat:         d.fetch("feat").map { |x| RaceElement.from_dynamic!(x) },
         )
       end
 
@@ -4038,9 +4476,9 @@ module DdbRuby
       attribute :current_xp,                 Types::Integer
       attribute :alignment_id,               Types::Integer.optional
       attribute :lifestyle_id,               Types::Integer.optional
-      attribute :stats,                      Types.Array(Stat)
-      attribute :bonus_stats,                Types.Array(Stat)
-      attribute :override_stats,             Types.Array(Stat)
+      attribute :stats,                      Types.Array(BonusStatElement)
+      attribute :bonus_stats,                Types.Array(BonusStatElement)
+      attribute :override_stats,             Types.Array(BonusStatElement)
       attribute :background,                 CharacterBackground
       attribute :race,                       Race.optional
       attribute :race_definition_id,         Types::Nil
@@ -4053,7 +4491,7 @@ module DdbRuby
       attribute :inventory,                  Types.Array(Inventory)
       attribute :currencies,                 Currencies
       attribute :classes,                    Types.Array(CharacterClass)
-      attribute :feats,                      Types.Array(Feat)
+      attribute :feats,                      Types.Array(CharacterFeat)
       attribute :features,                   Types.Array(Types::Any)
       attribute :custom_defense_adjustments, Types.Array(Types::Any)
       attribute :custom_senses,              Types.Array(Types::Any)
@@ -4061,7 +4499,7 @@ module DdbRuby
       attribute :custom_proficiencies,       Types.Array(Types::Any)
       attribute :custom_actions,             Types.Array(Types::Any)
       attribute :character_values,           Types.Array(CharacterValue)
-      attribute :conditions,                 Types.Array(CharacterCondition)
+      attribute :conditions,                 Types.Array(Types::Any)
       attribute :death_saves,                DeathSaves
       attribute :adjustment_xp,              Types::Integer.optional
       attribute :spell_slots,                Types.Array(PactMagic)
@@ -4075,7 +4513,7 @@ module DdbRuby
       attribute :class_spells,               Types.Array(ClassSpell)
       attribute :custom_items,               Types.Array(CustomItem)
       attribute :campaign,                   Campaign.optional
-      attribute :creatures,                  Types.Array(Types::Any)
+      attribute :creatures,                  Types.Array(Creature)
       attribute :optional_origins,           Types.Array(Types::Any)
       attribute :optional_class_features,    Types.Array(Types::Any)
       attribute :date_modified,              Types::String
@@ -4113,9 +4551,9 @@ module DdbRuby
           current_xp:                 d.fetch("currentXp"),
           alignment_id:               d.fetch("alignmentId"),
           lifestyle_id:               d.fetch("lifestyleId"),
-          stats:                      d.fetch("stats").map { |x| Stat.from_dynamic!(x) },
-          bonus_stats:                d.fetch("bonusStats").map { |x| Stat.from_dynamic!(x) },
-          override_stats:             d.fetch("overrideStats").map { |x| Stat.from_dynamic!(x) },
+          stats:                      d.fetch("stats").map { |x| BonusStatElement.from_dynamic!(x) },
+          bonus_stats:                d.fetch("bonusStats").map { |x| BonusStatElement.from_dynamic!(x) },
+          override_stats:             d.fetch("overrideStats").map { |x| BonusStatElement.from_dynamic!(x) },
           background:                 CharacterBackground.from_dynamic!(d.fetch("background")),
           race:                       d.fetch("race") ? Race.from_dynamic!(d.fetch("race")) : nil,
           race_definition_id:         d.fetch("raceDefinitionId"),
@@ -4128,7 +4566,7 @@ module DdbRuby
           inventory:                  d.fetch("inventory").map { |x| Inventory.from_dynamic!(x) },
           currencies:                 Currencies.from_dynamic!(d.fetch("currencies")),
           classes:                    d.fetch("classes").map { |x| CharacterClass.from_dynamic!(x) },
-          feats:                      d.fetch("feats").map { |x| Feat.from_dynamic!(x) },
+          feats:                      d.fetch("feats").map { |x| CharacterFeat.from_dynamic!(x) },
           features:                   d.fetch("features"),
           custom_defense_adjustments: d.fetch("customDefenseAdjustments"),
           custom_senses:              d.fetch("customSenses"),
@@ -4136,7 +4574,7 @@ module DdbRuby
           custom_proficiencies:       d.fetch("customProficiencies"),
           custom_actions:             d.fetch("customActions"),
           character_values:           d.fetch("characterValues").map { |x| CharacterValue.from_dynamic!(x) },
-          conditions:                 d.fetch("conditions").map { |x| CharacterCondition.from_dynamic!(x) },
+          conditions:                 d.fetch("conditions"),
           death_saves:                DeathSaves.from_dynamic!(d.fetch("deathSaves")),
           adjustment_xp:              d.fetch("adjustmentXp"),
           spell_slots:                d.fetch("spellSlots").map { |x| PactMagic.from_dynamic!(x) },
@@ -4150,7 +4588,7 @@ module DdbRuby
           class_spells:               d.fetch("classSpells").map { |x| ClassSpell.from_dynamic!(x) },
           custom_items:               d.fetch("customItems").map { |x| CustomItem.from_dynamic!(x) },
           campaign:                   d.fetch("campaign") ? Campaign.from_dynamic!(d.fetch("campaign")) : nil,
-          creatures:                  d.fetch("creatures"),
+          creatures:                  d.fetch("creatures").map { |x| Creature.from_dynamic!(x) },
           optional_origins:           d.fetch("optionalOrigins"),
           optional_class_features:    d.fetch("optionalClassFeatures"),
           date_modified:              d.fetch("dateModified"),
@@ -4216,7 +4654,7 @@ module DdbRuby
           "customProficiencies"      => custom_proficiencies,
           "customActions"            => custom_actions,
           "characterValues"          => character_values.map { |x| x.to_dynamic },
-          "conditions"               => conditions.map { |x| x.to_dynamic },
+          "conditions"               => conditions,
           "deathSaves"               => death_saves.to_dynamic,
           "adjustmentXp"             => adjustment_xp,
           "spellSlots"               => spell_slots.map { |x| x.to_dynamic },
@@ -4230,7 +4668,7 @@ module DdbRuby
           "classSpells"              => class_spells.map { |x| x.to_dynamic },
           "customItems"              => custom_items.map { |x| x.to_dynamic },
           "campaign"                 => campaign&.to_dynamic,
-          "creatures"                => creatures,
+          "creatures"                => creatures.map { |x| x.to_dynamic },
           "optionalOrigins"          => optional_origins,
           "optionalClassFeatures"    => optional_class_features,
           "dateModified"             => date_modified,
