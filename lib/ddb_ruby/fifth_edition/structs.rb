@@ -18,7 +18,7 @@ module DdbRuby
       include Dry.Types(default: :nominal)
 
       Integer                             = Coercible::Integer
-      Bool                                = Types:Params::Bool
+      Bool                                = Types::Params::Bool
       Hash                                = Coercible::Hash
       String                              = Coercible::String
       Double                              = Coercible::Float | Coercible::Integer

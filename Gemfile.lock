@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    ddb_ruby (0.0.7)
+    ddb_ruby (0.0.8)
       dry-struct (~> 1.6)
       dry-types (~> 1.7)
       multi_json (~> 1.15)
